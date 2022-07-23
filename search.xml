@@ -4,6 +4,60 @@
   
     
     <entry>
+      <title>ubuntu虚拟机桥接网络固定ip</title>
+      <link href="/2022/07/23/ubuntu%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A1%A5%E6%8E%A5%E7%BD%91%E7%BB%9C%E5%9B%BA%E5%AE%9Aip/"/>
+      <url>/2022/07/23/ubuntu%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A1%A5%E6%8E%A5%E7%BD%91%E7%BB%9C%E5%9B%BA%E5%AE%9Aip/</url>
+      
+        <content type="html"><![CDATA[<p><strong>网上很多都是修改&#x2F;etc&#x2F;network&#x2F;interfaces 或者是 &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-ens33 这样的，笑死ubuntu22.04LTS根本没这些</strong></p><hr><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">先用 ip route show 查看网关，因为是桥接模式，其实也可以通过宿主机看到，一样的，就是你物理路由器的ip</span></span><br><span class="line"></span><br><span class="line">(base)  ✘ ⚡ root@pweni  ~  ip route show</span><br><span class="line">default via 192.168.1.105 dev ens33 proto static</span><br><span class="line">192.168.1.0/24 dev ens33 proto kernel scope link src 192.168.1.168</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">可以看到 default via 192.168.1.105 这就是默认网关</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">然后修改 /etc/netplan/00-installer-config.yaml 这个文件为如下</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">This is the network config written by <span class="string">&#x27;subiquity&#x27;</span></span></span><br><span class="line">network:</span><br><span class="line">  ethernets:</span><br><span class="line">    ens33: # 这是网卡名称ipconfig可以看到</span><br><span class="line">      dhcp4: no # 动态ip改为no</span><br><span class="line">      addresses: [192.168.1.168/24] # 这儿就是你想固定的ip，我改成了168，后面的24是子网掩码必须要加的</span><br><span class="line">      gateway4: 192.168.1.105 # 这儿就是要填上面看到的网关</span><br><span class="line">      nameservers:</span><br><span class="line">              addresses: [8.8.8.8,114.114.114.114] # 这而就是配置dns,和windows那个有点像</span><br><span class="line">  version: 2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使得修改生效</span></span><br><span class="line">netplan apply</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(base)  ⚡ root@pweni  ~  netplan apply</span><br><span class="line"></span><br><span class="line">** (generate:60221): WARNING **: 10:28:09.569: `gateway4` has been deprecated, use default routes instead.</span><br><span class="line">See the &#x27;Default routes&#x27; section of the documentation for more details.</span><br><span class="line"></span><br><span class="line">** (process:60219): WARNING **: 10:28:10.484: `gateway4` has been deprecated, use default routes instead.</span><br><span class="line">See the &#x27;Default routes&#x27; section of the documentation for more details.</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">上面的提示不管，以后再研究为什么。。。。。。</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 解决问题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> 解决问题 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>ubuntu磁盘扩容(lvm)</title>
+      <link href="/2022/07/23/ubuntu%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9-lvm/"/>
+      <url>/2022/07/23/ubuntu%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9-lvm/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/../images/ubuntu%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9-lvm/image-20220723094650401.png" alt="image-20220723094650401"></p><h1 id="lvm扩容"><a href="#lvm扩容" class="headerlink" title="lvm扩容"></a>lvm扩容</h1><h2 id="1、查看磁盘的情况"><a href="#1、查看磁盘的情况" class="headerlink" title="1、查看磁盘的情况"></a>1、查看磁盘的情况</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看容量</span></span><br><span class="line">df -h</span><br></pre></td></tr></table></figure><p><img src="/../images/ubuntu%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9-lvm/image-20220723095028128.png" alt="image-20220723095028128"></p><p>这是我拓展好以后的，&#x2F;dev&#x2F;mapper&#x2F;ubuntu–vg-ubuntu–lv，之前size&#x3D;14g，实际上物理磁盘我分了30个g，占用已经71%了，扩容后直接占满整个&#x2F;dev&#x2F;sda3物理分区</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">用 fdisk /dev/sda -l 查看</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(base)  ⚡ root@pweni  ~  fdisk /dev/sda -l</span><br><span class="line">Disk /dev/sda: 30 GiB, 32212254720 bytes, 62914560 sectors</span><br><span class="line">Disk model: VMware Virtual S</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: gpt</span><br><span class="line">Disk identifier: DEDEC9A7-000F-47CE-8FFD-AEAB55D61BCA</span><br><span class="line"></span><br><span class="line">Device       Start      End  Sectors Size Type</span><br><span class="line">/dev/sda1     2048     4095     2048   1M BIOS boot</span><br><span class="line">/dev/sda2     4096  4198399  4194304   2G Linux filesystem</span><br><span class="line">/dev/sda3  4198400 62912511 58714112  28G Linux filesystem</span><br><span class="line">(base)  ⚡ root@pweni  ~ </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">/dev/sda3 可以看到是28g,而我的lvm只用了其中的14g</span></span><br></pre></td></tr></table></figure><p><strong>上面表格的命令都是很好理解的，可惜我这篇文章是已经完事后写的</strong></p><h2 id="2、开始扩容"><a href="#2、开始扩容" class="headerlink" title="2、开始扩容"></a>2、开始扩容</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">用 lvextend &lt;要扩容的lvm&gt; &lt;物理分区&gt;</span></span><br><span class="line">lvextend /dev/mapper/ubuntu--vg-ubuntu--lv /dev/sda3</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(base)  ⚡ root@pweni  ~  lvextend /dev/mapper/ubuntu--vg-ubuntu--lv /dev/sda3</span><br><span class="line">  Size of logical volume ubuntu-vg/ubuntu-lv changed from &lt;14.00 GiB (3583 extents) to &lt;28.00 GiB (7167 extents).</span><br><span class="line">  Logical volume ubuntu-vg/ubuntu-lv successfully resized.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">可以看到从14GiB 变成了 28GiB</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">还需用 resize2fs 将改变告诉给文件系统</span></span><br><span class="line"></span><br><span class="line">(base)  ⚡ root@pweni  ~  resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv</span><br><span class="line">resize2fs 1.46.5 (30-Dec-2021)</span><br><span class="line">Filesystem at /dev/mapper/ubuntu--vg-ubuntu--lv is mounted on /; on-line resizing required</span><br><span class="line">old_desc_blocks = 2, new_desc_blocks = 4</span><br><span class="line">The filesystem on /dev/mapper/ubuntu--vg-ubuntu--lv is now 7339008 (4k) blocks long.</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">这样就欧克了</span></span><br></pre></td></tr></table></figure><hr><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><blockquote><p><a href="https://cloud.tencent.com/developer/article/1969678">Linux磁盘LVM根目录扩容 - 腾讯云开发者社区-腾讯云 (tencent.com)</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> 解决方法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> 解决方法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>linux终端美化</title>
       <link href="/2022/07/17/linux%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/"/>
       <url>/2022/07/17/linux%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/</url>
